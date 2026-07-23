@@ -1004,6 +1004,27 @@ input, textarea, select { font: inherit; }
 }
 .fx-item__value.is-up::after { content: " \25B2"; color: #7fd99a; font-size: 0.68rem; }
 .fx-item__value.is-down::after { content: " \25BC"; color: #e08080; font-size: 0.68rem; }
+
+.nav-fx {
+  gap: var(--sp-5);
+  margin-top: 0;
+  padding-inline: var(--sp-3);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  flex-wrap: nowrap;
+}
+.nav-fx .fx-item__label { font-size: 0.62rem; }
+.nav-fx .fx-item__value { font-size: 0.95rem; }
+@media (max-width: 1180px) {
+  .nav-fx { display: none; }
+}
+@media (max-width: 900px) {
+  .nav-fx {
+    display: flex;
+    border-left: none;
+    padding-inline: 0;
+    margin-top: var(--sp-2);
+  }
+}
 .footer-market__note { margin-top: var(--sp-4); font-size: 0.76rem; color: var(--steel-400); max-width: 44ch; }
 .footer-market__note a { color: var(--steel-300); text-decoration: underline; text-underline-offset: 2px; }
 .footer-market__note a:hover { color: var(--copper-400); }

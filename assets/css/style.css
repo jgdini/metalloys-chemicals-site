@@ -546,59 +546,93 @@ input, textarea, select { font: inherit; }
 
 .element {
   background: var(--paper-0);
-  padding: var(--sp-4);
-  min-height: 148px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   position: relative;
-  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  overflow: hidden;
+  transition: transform var(--dur-fast) var(--ease-out);
 }
-.element::before {
+.section--navy .element { background: var(--navy-800); }
+.element:hover { transform: translateY(-3px); z-index: 1; }
+
+.element__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(155deg, var(--navy-700), var(--navy-900));
+  overflow: hidden;
+}
+.element__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-med) var(--ease-out);
+}
+.element:hover .element__photo { transform: scale(1.06); }
+
+.element__media::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(140px circle at var(--tx, 50%) var(--ty, 50%), rgba(196, 112, 59, 0.16), transparent 70%);
+  z-index: 1;
+  background: linear-gradient(155deg, rgba(10, 23, 48, 0.4), rgba(10, 23, 48, 0.12) 45%, rgba(10, 23, 48, 0.65));
+  pointer-events: none;
+}
+.element__media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(140px circle at var(--tx, 50%) var(--ty, 50%), rgba(196, 112, 59, 0.35), transparent 70%);
   opacity: 0;
   transition: opacity var(--dur-fast) var(--ease-out);
 }
-.element:hover::before { opacity: 1; }
-.section--navy .element::before { background: radial-gradient(140px circle at var(--tx, 50%) var(--ty, 50%), rgba(255, 255, 255, 0.14), transparent 70%); }
-.section--navy .element { background: var(--navy-800); }
-.element__code {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.7rem;
-  color: var(--navy-700);
+.element:hover .element__media::before { opacity: 1; }
+
+.element__code-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.28);
+  padding: 2px 7px;
+  border-radius: 4px;
 }
-.section--navy .element__code { color: var(--paper-0); }
-.element__name {
+
+.element__overlay-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  background: linear-gradient(to top, rgba(10, 23, 48, 0.92), transparent);
+  color: var(--paper-0);
+  font-weight: 600;
   font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--ink-700);
-  line-height: 1.3;
+  line-height: 1.25;
 }
-.section--navy .element__name { color: var(--steel-300); }
-.element:hover {
-  background: var(--navy-800);
-  transform: translateY(-3px);
-  z-index: 1;
+
+.element__body {
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+  flex: 1;
 }
-.section--navy .element:hover { background: var(--copper-500); }
-.element:hover .element__code { color: var(--copper-400); }
-.section--navy .element:hover .element__code,
-.section--navy .element:hover .element__name { color: var(--paper-0); }
-.element:hover .element__name { color: var(--steel-300); }
 .element__desc {
   font-size: 0.78rem;
-  color: var(--steel-300);
+  color: var(--ink-500);
   max-height: 0;
   overflow: hidden;
   transition: max-height var(--dur-fast) var(--ease-out);
 }
+.section--navy .element__desc { color: var(--steel-300); }
 .element:hover .element__desc { max-height: 4rem; }
 .element a.element__link {
-  position: absolute; inset: 0;
+  position: absolute; inset: 0; z-index: 2;
 }
 
 @media (max-width: 900px) {

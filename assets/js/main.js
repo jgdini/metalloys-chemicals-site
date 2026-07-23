@@ -13,6 +13,31 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---- Footer FX widget (commercial USD/EUR, via AwesomeAPI) ---- */
+  var fxEls = document.querySelectorAll("[data-fx]");
+  if (fxEls.length) {
+    fetch("https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL")
+      .then(function (r) {
+        if (!r.ok) throw new Error("bad response");
+        return r.json();
+      })
+      .then(function (data) {
+        fxEls.forEach(function (el) {
+          var entry = data[el.getAttribute("data-fx")];
+          if (!entry) return;
+          var value = parseFloat(entry.bid);
+          if (isNaN(value)) return;
+          el.textContent = "R$ " + value.toLocaleString("pt-BR", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+          var pct = parseFloat(entry.pctChange);
+          if (!isNaN(pct)) el.classList.add(pct >= 0 ? "is-up" : "is-down");
+        });
+      })
+      .catch(function () {
+        var isEn = document.documentElement.lang === "en";
+        fxEls.forEach(function (el) { el.textContent = isEn ? "unavailable" : "indisponível"; });
+      });
+  }
+
   /* ---- Institutional video: click-to-play facade (thumbnail -> real embed) ---- */
   var videoFacades = document.querySelectorAll("[data-yt-facade]");
   videoFacades.forEach(function (btn) {

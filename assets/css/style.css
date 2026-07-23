@@ -126,29 +126,20 @@ input, textarea, select { font: inherit; }
 }
 
 /* ==========================================================================
-   Utility bar + header
+   Header
    ========================================================================== */
-.utility-bar {
-  background: var(--navy-900);
-  color: var(--steel-300);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.03em;
-}
-.utility-bar .container {
+.nav-lang {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-4);
-  padding-block: var(--sp-2);
-  overflow-x: auto;
-  white-space: nowrap;
+  gap: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding-inline: var(--sp-2);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
 }
-.utility-bar__units { display: flex; gap: var(--sp-6); }
-.utility-bar__units a:hover { color: var(--copper-400); }
-.utility-bar__lang { display: flex; gap: var(--sp-2); flex-shrink: 0; }
-.utility-bar__lang a { color: var(--steel-400); padding: 0 var(--sp-1); }
-.utility-bar__lang a.is-active { color: var(--paper-0); font-weight: 600; }
+.nav-lang a { color: var(--steel-400); padding: 0 var(--sp-1); transition: color var(--dur-fast); }
+.nav-lang a:hover { color: var(--copper-400); }
+.nav-lang a.is-active { color: var(--paper-0); font-weight: 600; }
 
 .site-header {
   position: sticky;
@@ -174,9 +165,6 @@ input, textarea, select { font: inherit; }
   display: inline-flex;
   align-items: center;
   line-height: 0;
-  background: var(--paper-0);
-  border-radius: var(--radius-sm);
-  padding: 6px 10px;
   position: relative;
   overflow: hidden;
   transition: transform var(--dur-fast) var(--ease-out);
@@ -185,14 +173,15 @@ input, textarea, select { font: inherit; }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, transparent 30%, rgba(218, 139, 87, 0.35) 50%, transparent 70%);
+  z-index: 1;
+  background: linear-gradient(120deg, transparent 30%, rgba(218, 139, 87, 0.45) 50%, transparent 70%);
   transform: translateX(-120%);
   transition: transform 0.8s var(--ease-out);
 }
 .brand:hover .brand__logo-chip::after { transform: translateX(120%); }
 .brand:hover .brand__logo-chip { transform: translateY(-1px); }
 .brand__logo-img {
-  height: 34px;
+  height: 54px;
   width: auto;
   display: block;
 }
@@ -294,7 +283,12 @@ input, textarea, select { font: inherit; }
     gap: var(--sp-6);
     font-size: 1.2rem;
   }
-  .utility-bar__units { display: none; }
+  .nav-lang {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-block: var(--sp-4) 0;
+    padding-inline: 0;
+  }
 }
 
 /* ==========================================================================

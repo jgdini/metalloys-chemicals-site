@@ -1009,6 +1009,18 @@ input, textarea, select { font: inherit; }
 .footer-market__note a:hover { color: var(--copper-400); }
 .news-links { display: grid; gap: var(--sp-2); margin-top: var(--sp-3); }
 .news-links a:hover { color: var(--copper-400); }
+.news-feed { display: grid; gap: var(--sp-3); margin: var(--sp-3) 0 0; padding: 0; list-style: none; }
+.news-feed li { font-size: 0.85rem; line-height: 1.4; }
+.news-feed a { color: var(--steel-300); }
+.news-feed a:hover { color: var(--copper-400); }
+.news-feed__date {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--steel-400);
+  margin-top: 2px;
+}
+.news-feed__loading, .news-feed__empty { color: var(--steel-400); font-size: 0.85rem; }
 @media (max-width: 720px) {
   .footer-market { grid-template-columns: 1fr; gap: var(--sp-6); }
 }

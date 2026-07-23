@@ -38,6 +38,67 @@
       });
   }
 
+  /* ---- Chemical industry news, filtered from Valor Econômico "Empresas" feed ---- */
+  var newsFeedEl = document.querySelector("[data-news-feed]");
+  if (newsFeedEl) {
+    var isEnPage = document.documentElement.lang === "en";
+    var newsKeywords = [
+      "químic", "quimic", "petroquímic", "petroquimic", "chemical", "petrochemical",
+      "dow", "braskem", "basf", "unigel", "solvay", "dupont", "oxiteno",
+      "fertilizante", "fertilizer", "resina", "resin", "polímero", "polimero", "polymer", "plástico", "plastic"
+    ];
+    var feedUrl = "https://valor.globo.com/rss/valor/empresas/";
+    fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(feedUrl))
+      .then(function (r) {
+        if (!r.ok) throw new Error("bad response");
+        return r.json();
+      })
+      .then(function (data) {
+        if (data.status !== "ok" || !data.items) throw new Error("bad feed");
+        var matches = data.items
+          .filter(function (item) {
+            var text = ((item.title || "") + " " + (item.description || "")).toLowerCase();
+            return newsKeywords.some(function (k) { return text.indexOf(k) !== -1; });
+          })
+          .slice(0, 4);
+
+        newsFeedEl.innerHTML = "";
+        if (!matches.length) {
+          var emptyLi = document.createElement("li");
+          emptyLi.className = "news-feed__empty";
+          emptyLi.textContent = isEnPage
+            ? "No chemical-industry headlines right now — see the sources below."
+            : "Nenhuma notícia do setor químico no momento — confira as fontes abaixo.";
+          newsFeedEl.appendChild(emptyLi);
+          return;
+        }
+        matches.forEach(function (item) {
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.href = item.link;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = item.title;
+          li.appendChild(a);
+          var d = new Date(item.pubDate);
+          if (!isNaN(d.getTime())) {
+            var dateSpan = document.createElement("span");
+            dateSpan.className = "news-feed__date";
+            dateSpan.textContent = d.toLocaleDateString(isEnPage ? "en-US" : "pt-BR");
+            li.appendChild(dateSpan);
+          }
+          newsFeedEl.appendChild(li);
+        });
+      })
+      .catch(function () {
+        newsFeedEl.innerHTML = "";
+        var errLi = document.createElement("li");
+        errLi.className = "news-feed__empty";
+        errLi.textContent = isEnPage ? "News unavailable right now." : "Notícias indisponíveis no momento.";
+        newsFeedEl.appendChild(errLi);
+      });
+  }
+
   /* ---- Institutional video: click-to-play facade (thumbnail -> real embed) ---- */
   var videoFacades = document.querySelectorAll("[data-yt-facade]");
   videoFacades.forEach(function (btn) {

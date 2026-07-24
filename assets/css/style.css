@@ -629,6 +629,32 @@ input, textarea, select { font: inherit; }
   position: absolute; inset: 0; z-index: 2;
 }
 
+/* ---- Catalog variant: always-visible desc + product sample + PDF download ---- */
+.elements-grid--catalog .element__desc {
+  max-height: none;
+  overflow: visible;
+}
+.element__sample {
+  margin: var(--sp-3) 0 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 2px;
+  font-size: 0.8rem;
+  color: var(--ink-700);
+}
+.element__sample-more {
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-500);
+}
+.element__download {
+  display: inline-flex;
+  margin-top: var(--sp-4);
+  font-size: 0.82rem;
+  padding: 0.55rem 1rem;
+}
+
 @media (max-width: 900px) {
   .elements-grid { grid-template-columns: repeat(3, 1fr); }
 }

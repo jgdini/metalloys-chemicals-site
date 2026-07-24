@@ -283,7 +283,9 @@ input, textarea, select { font: inherit; }
     gap: var(--sp-6);
     font-size: 1.2rem;
   }
-  .nav-lang {
+  .nav-lang { display: none; }
+  .site-header.is-open .nav-lang {
+    display: flex;
     border-left: none;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     padding-block: var(--sp-4) 0;
@@ -1044,7 +1046,8 @@ input, textarea, select { font: inherit; }
   .nav-fx { display: none; }
 }
 @media (max-width: 900px) {
-  .nav-fx {
+  .nav-fx { display: none; }
+  .site-header.is-open .nav-fx {
     display: flex;
     border-left: none;
     padding-inline: 0;

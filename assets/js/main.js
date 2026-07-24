@@ -258,13 +258,13 @@
     });
   }
 
-  /* ---- Molecular network canvas (home hero signature) ---- */
-  var networkHost = document.querySelector("[data-network]");
-  if (networkHost && !reduceMotion && "requestAnimationFrame" in window) {
-    initNetwork(networkHost);
+  /* ---- Molecular network canvas (hero signature, all hero / page-hero sections) ---- */
+  var networkHosts = document.querySelectorAll("[data-network]");
+  if (networkHosts.length && "requestAnimationFrame" in window) {
+    networkHosts.forEach(function (host) { initNetwork(host, reduceMotion); });
   }
 
-  function initNetwork(host) {
+  function initNetwork(host, isStatic) {
     var canvas = document.createElement("canvas");
     canvas.className = "hero-canvas";
     canvas.setAttribute("aria-hidden", "true");
@@ -280,26 +280,13 @@
     var w = 0, h = 0, particles = [];
     var mouse = { x: 0, y: 0, active: false };
     var rafId = null;
-    var COUNT = 42;
     var LINK_DIST = 130;
     var MOUSE_DIST = 170;
 
-    function resize() {
-      var prevW = w, prevH = h;
-      w = host.clientWidth;
-      h = host.clientHeight;
-      if (!w || !h) return;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      canvas.style.width = w + "px";
-      canvas.style.height = h + "px";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      if (!particles.length || !prevW || !prevH) seed();
-    }
-
     function seed() {
+      var count = Math.max(14, Math.round((w * h) / 24000));
       particles = [];
-      for (var i = 0; i < COUNT; i++) {
+      for (var i = 0; i < count; i++) {
         particles.push({
           x: Math.random() * w,
           y: Math.random() * h,
@@ -310,46 +297,8 @@
       }
     }
 
-    resize();
-
-    if ("ResizeObserver" in window) {
-      var ro = new ResizeObserver(function () { resize(); });
-      ro.observe(host);
-    } else {
-      var resizeTimer;
-      window.addEventListener("resize", function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(resize, 200);
-      });
-    }
-
-    host.addEventListener("mousemove", function (e) {
-      var r = host.getBoundingClientRect();
-      mouse.x = e.clientX - r.left;
-      mouse.y = e.clientY - r.top;
-      mouse.active = true;
-    });
-    host.addEventListener("mouseleave", function () { mouse.active = false; });
-
-    document.addEventListener("visibilitychange", function () {
-      if (document.hidden) {
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = null;
-      } else if (!rafId) {
-        rafId = requestAnimationFrame(step);
-      }
-    });
-
-    function step() {
+    function draw() {
       ctx.clearRect(0, 0, w, h);
-
-      for (var i = 0; i < particles.length; i++) {
-        var p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > w) p.vx *= -1;
-        if (p.y < 0 || p.y > h) p.vy *= -1;
-      }
 
       for (var i = 0; i < particles.length; i++) {
         for (var j = i + 1; j < particles.length; j++) {
@@ -365,7 +314,7 @@
             ctx.stroke();
           }
         }
-        if (mouse.active) {
+        if (!isStatic && mouse.active) {
           var p2 = particles[i];
           var mdx = p2.x - mouse.x, mdy = p2.y - mouse.y;
           var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
@@ -388,7 +337,7 @@
         ctx.fill();
       }
 
-      if (mouse.active) {
+      if (!isStatic && mouse.active) {
         var grd = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 16);
         grd.addColorStop(0, "rgba(218, 139, 87, 0.85)");
         grd.addColorStop(1, "rgba(218, 139, 87, 0)");
@@ -397,7 +346,68 @@
         ctx.arc(mouse.x, mouse.y, 16, 0, Math.PI * 2);
         ctx.fill();
       }
+    }
 
+    function resize() {
+      var prevW = w, prevH = h;
+      w = host.clientWidth;
+      h = host.clientHeight;
+      if (!w || !h) return;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (isStatic) {
+        // No animation loop keeps redrawing, so every resize needs a fresh static frame.
+        seed();
+        draw();
+      } else if (!particles.length || !prevW || !prevH) {
+        seed();
+      }
+    }
+
+    resize();
+
+    if ("ResizeObserver" in window) {
+      var ro = new ResizeObserver(function () { resize(); });
+      ro.observe(host);
+    } else if (!isStatic) {
+      var resizeTimer;
+      window.addEventListener("resize", function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resize, 200);
+      });
+    }
+
+    if (isStatic) return;
+
+    host.addEventListener("mousemove", function (e) {
+      var r = host.getBoundingClientRect();
+      mouse.x = e.clientX - r.left;
+      mouse.y = e.clientY - r.top;
+      mouse.active = true;
+    });
+    host.addEventListener("mouseleave", function () { mouse.active = false; });
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = null;
+      } else if (!rafId) {
+        rafId = requestAnimationFrame(step);
+      }
+    });
+
+    function step() {
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+      }
+      draw();
       rafId = requestAnimationFrame(step);
     }
 

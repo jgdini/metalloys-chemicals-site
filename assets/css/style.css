@@ -394,15 +394,19 @@ input, textarea, select { font: inherit; }
 }
 .hero__facts .container {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-8);
-  padding-block: var(--sp-4);
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding-block: var(--sp-5);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 1.15rem;
   color: var(--steel-300);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
-.hero__facts strong { color: var(--paper-0); font-weight: 600; }
+.hero__facts strong { color: var(--paper-0); font-weight: 600; font-size: 1.3rem; }
+@media (max-width: 640px) {
+  .hero__facts .container { font-size: 0.92rem; }
+  .hero__facts strong { font-size: 1.05rem; }
+}
 
 /* ==========================================================================
    Sections, generic
